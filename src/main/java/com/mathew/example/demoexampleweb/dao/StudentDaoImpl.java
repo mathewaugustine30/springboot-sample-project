@@ -1,46 +1,54 @@
 package com.mathew.example.demoexampleweb.dao;
 
 import com.mathew.example.demoexampleweb.model.Student;
+import com.mathew.example.demoexampleweb.repositiory.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public class StudentDaoImpl implements StudentDao {
 
-    private List<Student> students = new ArrayList<>();
-
+    @Autowired
+    private StudentRepository studentRepository;
     @Override
     public int addEmployee(Student student) {
-        students.add(student);
+        Student save = studentRepository.save(student);
         return 1;
     }
 
     @Override
     public int updateStudent(int id, Student student) {
-        if (students.removeIf(k -> k.getId() == id)) {
-            students.add(student);
+        Optional<Student> byId = studentRepository.findById(student.getId());
+        studentRepository.save(student);
+        if(byId.isPresent()){
             return 1;
-        } else {
-            students.add(student);
+        }else{
             return 0;
-
         }
-
     }
 
     @Override
     public int deleteStudent(int id) {
-        return students.removeIf(k -> k.getId() == id) ? 1 : 0;
+        Optional<Student> byId = studentRepository.findById(id);
+        if (byId.isPresent()) {
+            studentRepository.deleteById(id);
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public Student getStudent(int id) {
-        return students.stream().filter(k -> k.getId() == id).findAny().orElse(null);
+        return studentRepository.findById(id).get();
     }
 
     @Override
     public List<Student> getStudents() {
-        return students;
+        return studentRepository.findAll();
     }
 }

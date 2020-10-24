@@ -1,6 +1,18 @@
 package com.mathew.example.demoexampleweb.model;
 
+import javax.persistence.*;
+
+@Entity(name = "tbl_user")
 public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
+    private Integer id;
+
+    @Column(name = "user_name")
+    private String name;
+
     public Integer getId() {
         return id;
     }
@@ -16,9 +28,6 @@ public class Student {
     public void setName(String name) {
         this.name = name;
     }
-
-    private Integer id;
-    private String name;
 
 
 }
